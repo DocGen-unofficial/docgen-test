@@ -1,7 +1,0 @@
-version: '3.8'
-
-services:
-  fetch-repo-from-blob:
-    build: ./microservices/fetch-repo-from-blob
-    env_file:
-      - ./microservices/fetch-repo-from-blob/.env
