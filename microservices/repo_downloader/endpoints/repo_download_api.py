@@ -1,33 +1,27 @@
 from fastapi import APIRouter
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Optional, Dict
 from source.github_cloner import DownloadRepo
 
 router = APIRouter(prefix="/v1")
 
-class Authentication(BaseModel):
-    email: Optional[str] = Field(default=None, example=None)
-    password: Optional[str] = Field(default=None, example=None)
-    token: Optional[str] = Field(default=None, example=None)
-
 class GithubRepository(BaseModel):
-    repository: str
-    authentication: Optional[Authentication] = Field(
+    repository: str = Field(
+        ...,
+        example="",
+        description="Full name of the GitHub repository (e.g., 'owner/repo')"
+    )
+    token: Optional[str] = Field(
         default=None,
-        example={
-            "email": None,
-            "password": None,
-            "token": None
-        },
-        description="Optional authentication credentials (can be omitted or set to null)"
+        example="",
+        description="Optional GitHub access token (can be omitted or set to null)"
     )
 
-
 @router.post("/download_repository", summary="Endpoint to clone a repository")
-async def download_repository(repository: GithubRepository):
+async def download_repository(repository: GithubRepository) -> Dict:
     
     try:
-        repo = DownloadRepo(repository.repository)
+        repo = DownloadRepo(repository.repository, repository.token)
     except:
         return{'message': 'Link to repository invalid or not found'}
     
