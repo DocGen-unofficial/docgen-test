@@ -17,6 +17,28 @@ def test_valid_url():
     repo = DownloadRepo(url_repository)
     assert isinstance(repo, DownloadRepo)
 
+def test_list_valid_url():
+    """
+    Test to see if the list of GitHub URLs is correct
+    """
+    repository_list = [
+        "https://github.com/theskumar/python-dotenv.git",
+        "https://github.com/scrapy/scrapy.git",
+        "https://github.com/pallets/flask.git",
+        "https://github.com/fastapi/fastapi.git",
+        "https://github.com/pytorch/pytorch.git",
+        "https://github.com/django/django.git",
+        "https://github.com/numpy/numpy.git",
+        "https://github.com/matplotlib/matplotlib.git",
+        "https://github.com/scikit-learn/scikit-learn.git",
+        "https://github.com/python-pillow/Pillow.git",
+        "https://github.com/sqlalchemy/sqlalchemy.git",
+        "https://github.com/sympy/sympy.git",
+    ]
+    for url in repository_list:
+        repo = DownloadRepo(url)
+        assert isinstance(repo, DownloadRepo)
+
 def test_connection():
     """
     Test to see if the connection is established
