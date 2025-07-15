@@ -1,5 +1,11 @@
 services:
   fetch-repo-from-blob:
-    build: microservices/fetch-repo-from-blob
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
     env_file:
-      - microservices/fetch-repo-from-blob/.env
+      - .env
+    volumes:
+      - ./outputs:/app/outputs
