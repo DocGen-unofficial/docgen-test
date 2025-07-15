@@ -9,20 +9,29 @@ class DownloadRepo():
 
     Attributes:
         url_repository (str): Repository URL link 
-        authentication (dict): Login information of a user email, passoword and token
+        token (str): Your token to clone your private repository
     """
-    def __init__(self, url_repository: str, authentication: Optional[dict] = None):
+    def __init__(self, url_repository: str, token: str = None):
         self.url_repository = url_repository
-        self.authentication = authentication
+        self.token = token
         self.__check_url()
+        self.__add_token()
 
-    def __check_url(self):
+    def __check_url(self) -> None:
         """
         Method to check if the link is a github repository
         """
         if not re.match(LINK, self.url_repository):
             raise InvalidLinkRepository(self.url_repository)
-    
+        
+    def __add_token(self) -> None:
+        """
+        Method that adds the token to download a private repository 
+        """
+        if self.token:
+            self.url_repository = self.url_repository[:8] + self.token +"@"+ self.url_repository[8:]
+            print(self.url_repository)
+
     def download(self) -> bool:
         """
         Clone a repository
@@ -30,12 +39,15 @@ class DownloadRepo():
         Returns:
             bool: True if the download is successful
         """
+
+        # git clone https://<TOKEN>@github.com/nomeutente/repo-privata.git
+
         try:
             os.system(f"git clone {self.url_repository}")
             return True
         except:
             return False
-
+            
 
 class InvalidLinkRepository(Exception):
     def __init__(self, link):
