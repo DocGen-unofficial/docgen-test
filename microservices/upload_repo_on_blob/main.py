@@ -1,36 +1,38 @@
 import os
-import re
-import sys
+import asyncio
+import time
+
 from src.services.blob_manager import BlobManager
 from src.services.uploader import RepoUploader
+from src.utils.helpers import sanitize_container_name
+from src.utils.logging_config import get_logger
+from src.utils.log_messages import (
+    upload_started,
+    upload_success,
+    upload_failed,
+)
 
-def sanitize_container_name(name: str) -> str:
-    name = name.lower()
-    name = re.sub(r'[^a-z0-9-]', '-', name)
-    name = re.sub(r'-+', '-', name).strip('-')
-    if len(name) >= 3 and len(name) <= 22:
-        return name
-    elif len(name) > 24:
-        return name[:22]
-    else:
-        return f"repo-{name}"
+logger = get_logger(__name__)
 
-def main():
-    local_path = r"microservices\upload-repo-on-blob\UnicAssistant4554"
-    repo_name = os.path.basename(os.path.normpath(local_path))
-    print(repo_name)
-    container_name = sanitize_container_name(repo_name)
-    print(container_name)
+async def process_repo_upload(local_path: str) -> str:
+    container_name = sanitize_container_name(os.path.basename(local_path))
 
-    print(f"[•] Uploading repo '{repo_name}' from '{local_path}' to container '{container_name}'...")
+    logger.info(upload_started(local_path, container_name))
+    start_time = time.time()
 
-    blob_manager = BlobManager()
-    if blob_manager.ensure_container_exists(container_name):
+    with BlobManager() as blob_manager:
         uploader = RepoUploader(blob_manager)
-        uploader.upload_repository(local_path, container_name)
-        print(f"[✔] Upload complete for repo '{repo_name}'.")
-    else:
-        print(f"[i] Container '{container_name}' already exists. Skipping creation.")
+        try:
+            total_files = await uploader.upload_repository_async(local_path, container_name)
+            elapsed_time = time.time() - start_time
+            logger.info(upload_success(local_path, total_files, elapsed_time))
+        except Exception as e:
+            elapsed_time = time.time() - start_time
+            logger.error(upload_failed(local_path, elapsed_time, e))
+            raise e
+
+    return container_name
 
 if __name__ == "__main__":
-    main()
+    test_repo_path = r"C:\VS Project\docgen-test\microservices\upload-repo-on-blob\UnicAssistant"
+    asyncio.run(process_repo_upload(test_repo_path))
