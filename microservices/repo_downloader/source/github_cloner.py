@@ -29,26 +29,36 @@ class DownloadRepo():
         Method that adds the token to download a private repository 
         """
         if self.token:
-            self.url_repository = self.url_repository[:8] + self.token +"@"+ self.url_repository[8:]
-            print(self.url_repository)
+            self.url_repository = re.sub(r'^(https?://)', rf'\1{self.token}@', self.url_repository)
 
-    def download(self) -> bool:
+    def __is_git_cloned(self) -> str:
+        """
+        Method to create the path where the repository will be stored
+
+        Returns:
+            str: The directory path
+        """
+        github_folder_name = self.url_repository.split("/")[-1].replace(".git","")
+        full_path = os.path.join(os.getcwd(), github_folder_name)
+        print(full_path)
+        return full_path
+
+    def download(self) -> tuple[bool, str]:
         """
         Clone a repository
 
         Returns:
-            bool: True if the download is successful
+            tuple[bool, str]: A tuple where:
+                - The first element is True if the repository was cloned successfully, False otherwise
+                - The second element is the path where the repository is (or would be) stored
         """
-
-        # git clone https://<TOKEN>@github.com/nomeutente/repo-privata.git
-
-        try:
-            os.system(f"git clone {self.url_repository}")
-            return True
-        except:
-            return False
+        os.system(f"git clone {self.url_repository}")
+        repo_path = self.__is_git_cloned()
+        if os.path.exists(repo_path):
+            return (True, repo_path)
+        return (False, None)
             
-
+            
 class InvalidLinkRepository(Exception):
-    def __init__(self, link):
+    def __init__(self, link: str):
         super().__init__(f"invalid link to a github repository {link}.")
