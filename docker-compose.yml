@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  service-a:
+    build: ./microservices/repo_downloader
+    ports:
+      - "5000:8081"
+    networks:
+      - microservices-net
+
+  service-b:
+    build: ./microservices/upload_repo_on_blob
+    ports:
+      - "5001:8080"
+    depends_on:
+      - service-a
+    networks:
+      - microservices-net
+
+  service-c:
+    build: ./microservices/fetch_repo_from_blob
+    ports:
+      - "5002:8080"
+    depends_on:
+      - service-b
+    networks:
+      - microservices-net
+
+networks:
+  microservices-net:
+    driver: bridge

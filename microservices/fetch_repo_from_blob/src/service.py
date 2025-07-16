@@ -1,8 +1,11 @@
 import os
 import logging
+from dotenv import load_dotenv
 import pandas as pd
 from azure.storage.blob.aio import BlobServiceClient
 from azure.core.exceptions import ResourceNotFoundError, ClientAuthenticationError, HttpResponseError, ServiceRequestError, ResourceExistsError
+
+load_dotenv()
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -10,6 +13,8 @@ logger = logging.getLogger(__name__)
 connection_string = os.environ["AZURE_STORAGE_CONNECTION_STRING"]
 blob_service_client = BlobServiceClient.from_connection_string(connection_string)
 
+output_dir = os.path.join(os.getcwd(), "outputs")
+os.makedirs(output_dir, exist_ok=True)
 
 async def access_container(container_name):
     """
@@ -55,7 +60,6 @@ async def get_container(container_name):
     Returns:
         folder: il container specificato.
     """
-    output_dir = "/app/outputs"
     container_client = blob_service_client.get_container_client(container_name)
     downloaded_blobs = []
     async for blob in container_client.list_blobs():
@@ -90,9 +94,10 @@ async def get_file_from_container(container_name, blob_name):
     stream = await blob_client.download_blob()
     blob_data = await stream.readall()
 
-    output_dir = "/app/outputs"
     output_path = os.path.join(output_dir, blob_name)
-    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    dir_path = os.path.dirname(output_path)
+    if dir_path and not os.path.exists(dir_path):
+        os.makedirs(dir_path, exist_ok=True)
 
     with open(output_path, "wb") as f:
         f.write(blob_data)
@@ -132,7 +137,7 @@ async def blob_to_parquet(container_name, blob_name):
     Returns:
         parquet: il blob convertito in formato Parquet
     """
-    output_dir = "/app/outputs"
+
     container_client = blob_service_client.get_container_client(container_name)
     blob_client = container_client.get_blob_client(blob_name)
     stream = await blob_client.download_blob()
@@ -164,7 +169,7 @@ async def container_to_parquet(container_name, single_parquet=False):
         parquet: il container convertito in formato Parquet
     """
     container_client = blob_service_client.get_container_client(container_name)
-    output_dir = "/app/outputs"
+    
     os.makedirs(output_dir, exist_ok=True)
     if single_parquet:
         rows = []

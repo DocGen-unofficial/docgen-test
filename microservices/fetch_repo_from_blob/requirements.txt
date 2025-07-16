@@ -6,3 +6,4 @@ pandas
 aiohttp
 pyarrow
 fastparquet
+python-dotenv
