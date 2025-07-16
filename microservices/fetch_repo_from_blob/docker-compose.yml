@@ -1,5 +1,5 @@
 services:
-  fetch-repo-from-blob:
+  fetch_repo_from_blob:
     build: 
       context: .
       dockerfile: Dockerfile
