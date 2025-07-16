@@ -1,4 +1,8 @@
 azure-storage-blob
+azure-core
 fastapi
-azure.core
 uvicorn
+pandas
+aiohttp
+pyarrow
+fastparquet
