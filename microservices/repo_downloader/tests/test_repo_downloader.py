@@ -56,7 +56,7 @@ def test_cloning_pubblic_repository() -> None:
             "repository": "https://github.com/robertoparodo/UnicAssistant.git"
         }
     )
-    assert response.json()["message"] == "successful cloning"
+    assert "Repository successfully cloned." in response.json()["message"]
 
 def test_cloning_private_repository() -> None:
     """
@@ -69,4 +69,4 @@ def test_cloning_private_repository() -> None:
             "token": "<here you have to enter your personal token>"
         }
     )
-    assert response.json()["message"] == "successful cloning"
+    assert "Repository successfully cloned." in response.json()["message"]

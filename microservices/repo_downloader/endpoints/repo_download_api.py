@@ -25,6 +25,7 @@ async def download_repository(repository: GithubRepository) -> Dict:
     except:
         return{'message': 'Link to repository invalid or not found'}
     
-    if repo.download(): #TODO: stampa il percorso dove viene salvata la repo
-        return {"message": "successful cloning"}
+    repo = repo.download()
+    if repo[0]:
+        return {"message": f"Repository successfully cloned. Local path: {repo[1]}"}
     return {"message": "cloning error"}
