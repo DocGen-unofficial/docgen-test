@@ -1,9 +1,11 @@
 services:
-  fetch-repo-from-blob:
+  fetch_repo_from_blob:
     build: 
       context: .
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
+    env_file:
+      - .env
     volumes:
       - ./outputs:/app/outputs
