@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from .service import access_container, get_file_from_container, get_files_by_type, get_container, blob_to_parquet, container_to_parquet
 
-router = APIRouter(prefix="/v3")
+router = APIRouter(prefix="/v3", tags=["Integration Layer"])
 
 @router.get("/access-container/{container_name}")   
 async def is_container_accessible(container_name: str):

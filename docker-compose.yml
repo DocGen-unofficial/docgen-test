@@ -4,7 +4,7 @@ services:
   repo_downloader:
     build: ./microservices/repo_downloader
     ports:
-      - "5000:8081"
+      - "5000:8089"
     networks:
       - microservices-net
     volumes:
