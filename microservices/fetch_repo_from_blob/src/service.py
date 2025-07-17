@@ -14,6 +14,7 @@ connection_string = os.environ["AZURE_STORAGE_CONNECTION_STRING"]
 blob_service_client = BlobServiceClient.from_connection_string(connection_string)
 
 output_dir = os.path.join(os.getcwd(), "outputs")
+print(output_dir)
 os.makedirs(output_dir, exist_ok=True)
 
 async def access_container(container_name):
