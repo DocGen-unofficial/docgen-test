@@ -27,5 +27,5 @@ async def download_repository(repository: GithubRepository) -> Dict:
     
     repo = repo.download()
     if repo[0]:
-        return {"message": f"Repository successfully cloned. Local path: {repo[1]}"}
+        return {"message": f"Repository successfully cloned. Local path: {repo[1]}. Url repository: {repo[2]}"}
     return {"message": "cloning error"}
