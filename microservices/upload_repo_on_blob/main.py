@@ -1,38 +1,34 @@
-import os
-import asyncio
-import time
+import uvicorn
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from microservices.upload_repo_on_blob.src.endpoints.endpoint_uploader import router as upload_router
 
-from src.services.blob_manager import BlobManager
-from src.services.uploader import RepoUploader
-from src.utils.helpers import sanitize_container_name
-from src.utils.logging_config import get_logger
-from src.utils.log_messages import (
-    upload_started,
-    upload_success,
-    upload_failed,
+app = FastAPI(
+    title="DocGen API",
+    description="Web App to generate documentation with AI"
 )
 
-logger = get_logger(__name__)
+app.include_router(upload_router)
 
-async def process_repo_upload(local_path: str) -> str:
-    container_name = sanitize_container_name(os.path.basename(local_path))
 
-    logger.info(upload_started(local_path, container_name))
-    start_time = time.time()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"]
+)
 
-    with BlobManager() as blob_manager:
-        uploader = RepoUploader(blob_manager)
-        try:
-            total_files = await uploader.upload_repository_async(local_path, container_name)
-            elapsed_time = time.time() - start_time
-            logger.info(upload_success(local_path, total_files, elapsed_time))
-        except Exception as e:
-            elapsed_time = time.time() - start_time
-            logger.error(upload_failed(local_path, elapsed_time, e))
-            raise e
+if __name__ == '__main__':
 
-    return container_name
+    server_configuration = uvicorn.Config(
+        app,
+        host="0.0.0.0",
+        port=8081,
+        log_level="info"
+    )
 
-if __name__ == "__main__":
-    test_repo_path = r"C:\VS Project\docgen-test\microservices\upload-repo-on-blob\UnicAssistant"
-    asyncio.run(process_repo_upload(test_repo_path))
+    server = uvicorn.Server(server_configuration)
+    server.run()
+    # https://github.com/robertoparodo/UnicAssistant.git
+    # http://localhost:8081/docs
