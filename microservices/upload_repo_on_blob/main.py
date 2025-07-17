@@ -1,7 +1,7 @@
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from microservices.upload_repo_on_blob.src.endpoints.endpoint_uploader import router as upload_router
+from src.endpoints.endpoint_uploader import router as upload_router
 
 app = FastAPI(
     title="DocGen API",
@@ -24,7 +24,7 @@ if __name__ == '__main__':
     server_configuration = uvicorn.Config(
         app,
         host="0.0.0.0",
-        port=8081,
+        port=8082,
         log_level="info"
     )
 

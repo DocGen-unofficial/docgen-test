@@ -13,7 +13,8 @@ logger = logging.getLogger(__name__)
 connection_string = os.environ["AZURE_STORAGE_CONNECTION_STRING"]
 blob_service_client = BlobServiceClient.from_connection_string(connection_string)
 
-output_dir = os.path.join(os.getcwd(), "outputs")
+output_dir = os.path.join(os.path.dirname(__file__), "..", "outputs")
+output_dir = os.path.abspath(output_dir)
 print(output_dir)
 os.makedirs(output_dir, exist_ok=True)
 

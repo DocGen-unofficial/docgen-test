@@ -14,8 +14,10 @@ class DownloadRepo():
     def __init__(self, url_repository: str, token: str = None):
         self.url_repository = url_repository
         self.token = token
+        self.github_folder_name = self.url_repository.split("/")[-1].replace(".git","")
         self.__check_url()
         self.__add_token()
+        
 
     def __check_url(self) -> None:
         """
@@ -38,8 +40,7 @@ class DownloadRepo():
         Returns:
             str: The directory path
         """
-        github_folder_name = self.url_repository.split("/")[-1].replace(".git","")
-        full_path = os.path.join(os.getcwd(), github_folder_name)
+        full_path = os.path.join(os.getcwd(), "outputs", self.github_folder_name)
         return full_path
 
     def download(self) -> tuple[bool, str, str]:
@@ -51,12 +52,12 @@ class DownloadRepo():
                 - The first element is True if the repository was cloned successfully, False otherwise
                 - The second element is the path where the repository is (or would be) stored
         """
-        os.system(f"git clone {self.url_repository}")
+
+        os.system(f"git clone {self.url_repository} outputs/{self.github_folder_name}")
         repo_path = self.__is_git_cloned()
         if os.path.exists(repo_path):
             if self.token:
                 self.url_repository = self.url_repository.replace(self.token+"@", "")
-            print(self.url_repository)
             return (True, repo_path, self.url_repository)
         return (False, None, None)
             
