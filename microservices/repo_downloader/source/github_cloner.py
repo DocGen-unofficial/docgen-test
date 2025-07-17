@@ -40,10 +40,9 @@ class DownloadRepo():
         """
         github_folder_name = self.url_repository.split("/")[-1].replace(".git","")
         full_path = os.path.join(os.getcwd(), github_folder_name)
-        print(full_path)
         return full_path
 
-    def download(self) -> tuple[bool, str]:
+    def download(self) -> tuple[bool, str, str]:
         """
         Clone a repository
 
@@ -55,8 +54,11 @@ class DownloadRepo():
         os.system(f"git clone {self.url_repository}")
         repo_path = self.__is_git_cloned()
         if os.path.exists(repo_path):
-            return (True, repo_path)
-        return (False, None)
+            if self.token:
+                self.url_repository = self.url_repository.replace(self.token+"@", "")
+            print(self.url_repository)
+            return (True, repo_path, self.url_repository)
+        return (False, None, None)
             
             
 class InvalidLinkRepository(Exception):
