@@ -23,7 +23,12 @@ app.add_middleware(
 )
 
 if __name__ == '__main__':
-
+    """
+    Main entry point for running the DocGen API server.
+    
+    Configures and starts the uvicorn server on host 0.0.0.0:8081
+    with info level logging.
+    """
     server_configuration = uvicorn.Config(
         app,
         host="0.0.0.0",
@@ -33,5 +38,3 @@ if __name__ == '__main__':
 
     server = uvicorn.Server(server_configuration)
     server.run()
-    # https://github.com/robertoparodo/UnicAssistant.git
-    # http://localhost:8081/docs

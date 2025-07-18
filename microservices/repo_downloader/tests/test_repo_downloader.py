@@ -3,7 +3,7 @@ import pytest, requests
 
 def test_not_valid_url() -> None:
     """
-    Test to verify that with a wrong URL the application recognizes it
+    Test to verify that the application correctly recognizes invalid URLs.
     """
     url_repository = "https://www.google.com/"
     with pytest.raises(InvalidLinkRepository):
@@ -11,7 +11,7 @@ def test_not_valid_url() -> None:
 
 def test_valid_url() -> None:
     """
-    Test to see if it recognizes repository links
+    Test to verify that the application correctly recognizes valid GitHub repository URLs.
     """
     url_repository = "https://github.com/pandas-dev/pandas.git"
     repo = DownloadRepo(url_repository)
@@ -19,7 +19,7 @@ def test_valid_url() -> None:
 
 def test_list_valid_url() -> None:
     """
-    Test to see if the list of GitHub URLs is correct
+    Test to verify that the application correctly recognizes a list of valid GitHub repository URLs.
     """
     repository_list = [
         "https://github.com/theskumar/python-dotenv.git",
@@ -41,14 +41,14 @@ def test_list_valid_url() -> None:
 
 def test_connection() -> None:
     """
-    Test to see if the connection is established
+    Test to verify that the API connection is established and responding.
     """
     response = requests.get(url='http://127.0.0.1:8081/v1/status')
     assert response.json()["message"] == "Ok"
 
-def test_cloning_pubblic_repository() -> None:
+def test_cloning_public_repository() -> None:
     """
-    Test to see if pubblic repository cloning is successful
+    Test to verify that public repository cloning is successful via the API.
     """
     response = requests.post(
         url='http://127.0.0.1:8081/v1/download_repository', 
@@ -60,7 +60,7 @@ def test_cloning_pubblic_repository() -> None:
 
 def test_cloning_private_repository() -> None:
     """
-    Test to see if private repository cloning is successful
+    Test to verify that private repository cloning is successful via the API.
     """
     response = requests.post(
         url='http://127.0.0.1:8081/v1/download_repository', 
