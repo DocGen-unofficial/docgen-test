@@ -30,5 +30,3 @@ if __name__ == '__main__':
 
     server = uvicorn.Server(server_configuration)
     server.run()
-    # https://github.com/robertoparodo/UnicAssistant.git
-    # http://localhost:8081/docs
