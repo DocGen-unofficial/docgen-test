@@ -3,7 +3,7 @@ from pydantic import BaseModel, Field
 from typing import Optional, Dict
 from source.github_cloner import DownloadRepo
 
-router = APIRouter(prefix="/v1", tags = ["repo_downloader"])
+router = APIRouter(prefix="/v1", tags = ["Clone repository"])
 
 class GithubRepository(BaseModel):
     repository: str = Field(
