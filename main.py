@@ -2,7 +2,7 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from microservices.fetch_repo_from_blob.src.api import router as fetch_repo_router
+from microservices.fetch_repo_from_blob.src.endpoints.api import router as fetch_repo_router
 #from microservices.repo_downloader.endpoints.repo_download_api import router as repo_download_api
 from microservices.repo_downloader.endpoints.status import router as status
 #from microservices.upload_repo_on_blob.src.endpoints.endpoint_uploader import router  as endpoint_uploader
