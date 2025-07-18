@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from source.container_services import access_container, get_files_by_type, get_container, container_to_parquet
 from source.blob_services import get_blob_from_container, blob_to_parquet
 from source.schemas import (
@@ -56,4 +56,8 @@ async def transform_blob_to_parquet(request: BlobToParquetRequest):
 async def transform_container_to_parquet(request: ContainerToParquetRequest):
     result = await container_to_parquet(request.container_name, request.single_parquet)
     parquet_path = result.get("parquet_path")
-    return FileResponse(parquet_path, media_type="application/octet-stream", filename=f"{request.container_name}.parquet")
+    return {
+        "status": result["status"],
+        "message": f"Container {request.container_name} converted to Parquet and saved to {parquet_path}",
+        "parquet_path": parquet_path
+    }
