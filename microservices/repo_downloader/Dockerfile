@@ -24,6 +24,6 @@ RUN git config --global http.sslVerify false
 
 COPY . .
 
-EXPOSE 8089
+EXPOSE 8081
 
 CMD ["python", "main.py"]
