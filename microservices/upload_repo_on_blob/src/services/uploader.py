@@ -48,5 +48,5 @@ class RepoUploader:
                 relative_path = os.path.relpath(full_path, repo_path).replace("\\", "/")
                 files.append((full_path, relative_path))
         self._speed_up_upload(container_client, files, max_workers)
-        return len(files)
+        return container_name
 

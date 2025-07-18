@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 from .service import access_container, get_file_from_container, get_files_by_type, get_container, blob_to_parquet, container_to_parquet
+from pydantic import BaseModel
 
 router = APIRouter(prefix="/v3", tags=["Integration Layer"])
 
@@ -47,7 +48,12 @@ async def transform_blob_to_parquet(container_name, blob_name):
     await blob_to_parquet(container_name, blob_name)
     return {"message": f"Blob {blob_name} from container {container_name} transformed to Parquet format"}
 
-@router.get("/transform-container-to-parquet/{container_name}/{single_parquet}")
-async def transform_container_to_parquet(container_name, single_parquet: bool):
-    await container_to_parquet(container_name, single_parquet)
-    return {"message": f"Container {container_name} transformed to Parquet format"}
+
+class TransformRequest(BaseModel):
+    container_name: str
+    single_parquet: bool
+
+@router.post("/transform-container-to-parquet")
+async def transform_container_to_parquet(request: TransformRequest):
+    await container_to_parquet(request.container_name, request.single_parquet)
+    return {"message": f"Container {request.container_name} transformed to Parquet format"}

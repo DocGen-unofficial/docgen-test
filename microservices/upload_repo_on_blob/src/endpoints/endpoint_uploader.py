@@ -23,8 +23,8 @@ async def upload_repo(repo_path: str)-> Dict[str, str]:
     try:
         blobmanager = BlobManager()
         uploader = RepoUploader(blobmanager)
-        upload_file = uploader.upload_repository(repo_path)
-        return {"status": "success", "message": f"Uploaded {upload_file}"}
+        container = uploader.upload_repository(repo_path)
+        return {"status": "success", "container_name": container}
     except Exception as e:
         return {"status": "error", "message": "Failed to connect to Azure Blob Storage.", "error": str(e)}
 
