@@ -1,7 +1,7 @@
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from src.api import router as fetch_repo_router
+from endpoints.api import router as fetch_repo_router
 
 app = FastAPI(
     title="DocGen API",
