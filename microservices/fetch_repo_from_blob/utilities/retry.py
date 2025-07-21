@@ -1,8 +1,11 @@
-from tenacity import retry, AsyncRetrying, stop_after_attempt, wait_exponential, retry_if_exception_type
+from tenacity import AsyncRetrying, stop_after_attempt, wait_exponential, retry_if_exception_type
 from azure.core.exceptions import AzureError
 import functools
 
 def azure_retry(function):
+    """
+    Decoratore per gestire i retry delle chiamate Azure.
+    """
     @functools.wraps(function)
     async def wrapper(*args, **kwargs):
         async for attempt in AsyncRetrying(
