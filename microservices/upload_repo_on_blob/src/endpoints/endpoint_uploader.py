@@ -34,23 +34,24 @@ async def upload_repo(repo_path: str) -> Dict[str, str]:
     """
     Upload a local repository to Azure Blob Storage.
 
-    Attributes:
+    Args:
         repo_path (str): The local file system path of the repository to be uploaded.
 
     Returns:
-        dict:
-          - message (str): Status message about the cloning operation
-        - path (str, optional): Path where repository was cloned (if successful)
-            - Url (str, optional): Repository URL (if successful) A JSON response indicating the status of the upload operation and
-        the name of the container where the repository was uploaded, or an error message if the upload failed.
+        Dict[str, str]: A dictionary containing:
+            - status: 'success' or 'error'
+            - container_name: The name of the container
+            - message: Indicates whether the container was created or already existed
     """
     try:
         blobmanager = BlobManager()
         uploader = RepoUploader(blobmanager)
-        container = uploader.upload_repository(repo_path)
+        container_name, created = uploader.upload_repository(repo_path)
         return {
             "status": "success",
-            "container_name": container
+            "container_name": container_name,
+            "message": "Container created and files uploaded." if created
+                       else "Container already existed. Files overwritten."
         }
     except Exception as e:
         return {
@@ -58,3 +59,4 @@ async def upload_repo(repo_path: str) -> Dict[str, str]:
             "message": "Failed to connect to Azure Blob Storage.",
             "error": str(e)
         }
+
