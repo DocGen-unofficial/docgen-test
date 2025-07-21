@@ -5,7 +5,7 @@ def get_repo_status(endpoint_url: str) -> int:
     """
     Get the status code from a repository endpoint.
 
-    Attributes:
+    Args:
         endpoint_url (str): The URL of the endpoint to check.
 
     Returns:
@@ -19,7 +19,7 @@ def get_repo_url(endpoint_url: str, request_body: Dict[str, Any]) -> Optional[Un
     """
     Send a POST request to retrieve the repository path from the endpoint.
 
-    Attributes:
+    Args:
         endpoint_url (str): The URL of the endpoint to call.
         request_body (Dict[str, Any]): The JSON body to send in the request.
 

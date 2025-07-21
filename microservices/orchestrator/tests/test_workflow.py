@@ -38,7 +38,7 @@ def mock_post_workflow(url: str, json: Optional[dict] = None, params: Optional[d
 def test_get_repo_status(monkeypatch: Any) -> None:
     """
     Test get_repo_status to ensure it returns the correct status code.
-    Attributes:
+    Args:
         monkeypatch (Any): Pytest fixture for patching functions.
     Returns:
         None
@@ -50,7 +50,7 @@ def test_get_repo_status(monkeypatch: Any) -> None:
 def test_get_repo_url_success(monkeypatch: Any) -> None:
     """
     Test get_repo_url for a successful response.
-    Attributes:
+    Args:
         monkeypatch (Any): Pytest fixture for patching functions.
     Returns:
         None
@@ -62,7 +62,7 @@ def test_get_repo_url_success(monkeypatch: Any) -> None:
 def test_get_repo_url_failure(monkeypatch: Any) -> None:
     """
     Test get_repo_url for a failed response (status code != 200).
-    Attributes:
+    Args:
         monkeypatch (Any): Pytest fixture for patching functions.
     Returns:
         None
@@ -74,7 +74,7 @@ def test_get_repo_url_failure(monkeypatch: Any) -> None:
 def test_main_workflow(monkeypatch: Any) -> None:
     """
     Test the main workflow by mocking requests.post to simulate downstream services.
-    Attributes:
+    Args:
         monkeypatch (Any): Pytest fixture for patching functions.
     Returns:
         None
