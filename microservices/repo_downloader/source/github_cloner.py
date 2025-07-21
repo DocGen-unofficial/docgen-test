@@ -1,4 +1,5 @@
 from typing import Optional, Tuple
+import shutil
 import os, re
 
 LINK = r"^https?:\/\/(www\.)?github\.com\/[\w.-]+\/[\w.-]+\.git$"
@@ -63,11 +64,13 @@ class DownloadRepo():
                 - Optional[str]: Path where repository is stored (None if failed)
                 - Optional[str]: Repository URL (None if failed)
         """
-        os.system(f"git clone {self.url_repository} outputs/{self.github_folder_name}")
         repo_path = self.__get_repository_path()
         if os.path.exists(repo_path):
-            if self.token:
-                self.url_repository = self.url_repository.replace(self.token+"@", "")
+            shutil.rmtree(repo_path)
+        os.system(f"git clone {self.url_repository} outputs/{self.github_folder_name}")
+        if self.token:
+            self.url_repository = self.url_repository.replace(self.token+"@", "")
+        if os.path.exists(repo_path):
             return (True, repo_path, self.url_repository)
         return (False, None, None)
             
