@@ -7,6 +7,7 @@ from azure.core.exceptions import ResourceNotFoundError, ClientAuthenticationErr
 from source.blob_services import get_blob_from_container, blob_to_parquet
 load_dotenv()
 from utilities.retry import azure_retry
+from utilities.chunk_rows import chunk_rows
 
 logger = logging.getLogger(__name__)
 
@@ -131,9 +132,13 @@ async def container_to_parquet(container_name, single_parquet=False):
                 "name": blob.name,
                 "content": content
             })
-        df = pd.DataFrame(rows)
-        output_path = os.path.join(output_dir, f"{container_name}.parquet")
-        df.to_parquet(output_path)
+        chunk_size = 1000000
+        parquet_path = []
+        for idx, chunk in enumerate(chunk_rows(rows, chunk_size)):
+            df = pd.DataFrame(chunk)
+            output_path = os.path.join(output_dir, f"{container_name}_part_{idx}.parquet")
+            df.to_parquet(output_path)
+            parquet_path.append(output_path)
         return {
             "status": True,
             "details": f"Container {container_name} converted to Parquet and saved to {output_path}",
@@ -151,3 +156,7 @@ async def container_to_parquet(container_name, single_parquet=False):
             "details": f"Converted {len(files)} blobs in container {container_name} to Parquet",
             "files": files
         }
+    
+
+
+# aggiungere controllo file per verificare se convertibile e inseribile su parquet???

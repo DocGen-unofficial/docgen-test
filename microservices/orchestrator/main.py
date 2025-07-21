@@ -2,7 +2,7 @@ from source.apicalls import get_repo_url
 import requests
 
 json_request_body: dict = {
-  "repository": "https://github.com/EY-AI-Data-Cagliari/Azure-AI-102.git",
+  "repository": "",
   "token": ""
 }
 
