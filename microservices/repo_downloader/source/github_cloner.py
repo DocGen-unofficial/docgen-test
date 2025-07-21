@@ -10,7 +10,6 @@ class DownloadRepo():
     Attributes:
         url_repository (str): Repository URL link 
         token (Optional[str]): Token to clone private repositories
-        github_folder_name (str): Name of the repository folder
     """
     def __init__(self, url_repository: str, token: Optional[str] = None):
         """
@@ -22,8 +21,8 @@ class DownloadRepo():
         """
         self.url_repository = url_repository
         self.token = token
-        self.github_folder_name = self.url_repository.split("/")[-1].replace(".git","")
         self.__check_url()
+        self.__create_unique_name()
         self.__add_token()
         
 
@@ -37,6 +36,10 @@ class DownloadRepo():
         if not re.match(LINK, self.url_repository):
             raise InvalidLinkRepository(self.url_repository)
         
+    def __create_unique_name(self):
+        temp_folder_name = self.url_repository.lower().replace(".git","").split("/")[-2:]
+        self.github_folder_name = "-".join(temp_folder_name)
+        
     def __add_token(self) -> None:
         """
         Add authentication token to the repository URL for private repositories.
@@ -44,7 +47,7 @@ class DownloadRepo():
         if self.token:
             self.url_repository = re.sub(r'^(https?://)', rf'\1{self.token}@', self.url_repository)
 
-    def __is_git_cloned(self) -> str:
+    def __get_repository_path(self) -> str:
         """
         Get the path where the repository will be stored.
 
@@ -64,9 +67,8 @@ class DownloadRepo():
                 - Optional[str]: Path where repository is stored (None if failed)
                 - Optional[str]: Repository URL (None if failed)
         """
-
         os.system(f"git clone {self.url_repository} outputs/{self.github_folder_name}")
-        repo_path = self.__is_git_cloned()
+        repo_path = self.__get_repository_path()
         if os.path.exists(repo_path):
             if self.token:
                 self.url_repository = self.url_repository.replace(self.token+"@", "")
