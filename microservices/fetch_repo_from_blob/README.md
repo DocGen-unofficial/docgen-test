@@ -24,4 +24,5 @@ Recupera i blob e i container selezionati da un contaier di Azure Blob Storage e
 
 - requirements.txt:
     - File requirements.txt: Contiene le dipendenze del progetto.
+
         
