@@ -1,6 +1,7 @@
 from azure.storage.blob.aio import BlobServiceClient
 import pandas as pd
 import os
+from utilities.retry import azure_retry
 
 
 connection_string = os.environ["AZURE_STORAGE_CONNECTION_STRING"]
@@ -10,7 +11,7 @@ output_dir = os.path.join(os.path.dirname(__file__), "..", "outputs")
 output_dir = os.path.abspath(output_dir)
 os.makedirs(output_dir, exist_ok=True)
 
-
+@azure_retry
 async def get_blob_from_container(container_name, blob_name):
     """
     Recupera un singolo blob da un container e lo salva nella cartella outputs.
@@ -35,6 +36,7 @@ async def get_blob_from_container(container_name, blob_name):
         f.write(blob_data)
     return {"status": True, "details": f"File {blob_name} downloaded successfully to {output_path}"}    
 
+@azure_retry
 async def blob_to_parquet(container_name, blob_name):
     """
     Converte un blob in formato Parquet e lo salva nella cartella outputs.
@@ -44,7 +46,7 @@ async def blob_to_parquet(container_name, blob_name):
     Returns:
         parquet: il blob convertito in formato Parquet
     """
-
+    
     container_client = blob_service_client.get_container_client(container_name)
     blob_client = container_client.get_blob_client(blob_name)
     stream = await blob_client.download_blob()

@@ -6,6 +6,7 @@ from azure.storage.blob.aio import BlobServiceClient
 from azure.core.exceptions import ResourceNotFoundError, ClientAuthenticationError, HttpResponseError, ServiceRequestError, ResourceExistsError
 from source.blob_services import get_blob_from_container, blob_to_parquet
 load_dotenv()
+from utilities.retry import azure_retry
 
 logger = logging.getLogger(__name__)
 
@@ -16,6 +17,7 @@ output_dir = os.path.join(os.path.dirname(__file__), "..", "outputs")
 output_dir = os.path.abspath(output_dir)
 os.makedirs(output_dir, exist_ok=True)
 
+@azure_retry
 async def access_container(container_name):
     """
     Controllo per verificare se il container è accessibile.
@@ -51,7 +53,7 @@ async def access_container(container_name):
         logger.error("An error occurred: %s", str(e))
         return {"status": False, "details": f"An error occurred: {str(e)}"}
 
-
+@azure_retry
 async def get_container(container_name):
     """
     Recupera un container specifico.
@@ -78,7 +80,7 @@ async def get_container(container_name):
         "files": downloaded_blobs
     }
 
-
+@azure_retry
 async def get_files_by_type(container_name, file_extension):
     """
     Recupera tutti i blob di un container con un'estensione specifica e li salva nella cartella outputs.
@@ -102,7 +104,7 @@ async def get_files_by_type(container_name, file_extension):
         "files": downloaded_blobs
     }
 
-
+@azure_retry
 async def container_to_parquet(container_name, single_parquet=False):
     """
     Converte un container in formato Parquet e lo salva nella cartella outputs.
