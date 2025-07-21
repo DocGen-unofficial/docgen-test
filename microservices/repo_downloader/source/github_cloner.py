@@ -12,13 +12,6 @@ class DownloadRepo():
         token (Optional[str]): Token to clone private repositories
     """
     def __init__(self, url_repository: str, token: Optional[str] = None):
-        """
-        Initialize the DownloadRepo instance.
-
-        Attributes:
-            url_repository (str): Repository URL link 
-            token (Optional[str]): Token to clone private repositories
-        """
         self.url_repository = url_repository
         self.token = token
         self.__check_url()
@@ -36,7 +29,10 @@ class DownloadRepo():
         if not re.match(LINK, self.url_repository):
             raise InvalidLinkRepository(self.url_repository)
         
-    def __create_unique_name(self):
+    def __create_unique_name(self) -> None:
+        """
+        Method to create unique repository name 
+        """
         temp_folder_name = self.url_repository.lower().replace(".git","").split("/")[-2:]
         self.github_folder_name = "-".join(temp_folder_name)
         
@@ -79,12 +75,9 @@ class DownloadRepo():
 class InvalidLinkRepository(Exception):
     """
     Exception raised when the provided link is not a valid GitHub repository.
+    
+    Attributes:
+            link (str): The invalid repository link
     """
     def __init__(self, link: str):
-        """
-        Initialize the exception with the invalid link.
-
-        Attributes:
-            link (str): The invalid repository link
-        """
         super().__init__(f"Invalid link to a GitHub repository: {link}")

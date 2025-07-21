@@ -27,7 +27,7 @@ async def download_repository(repository: GithubRepository) -> Dict:
     """
     Download and clone a repository from GitHub.
 
-    Attributes:
+    Args:
         repository (GithubRepository): The repository data containing URL and optional token
 
     Returns:
