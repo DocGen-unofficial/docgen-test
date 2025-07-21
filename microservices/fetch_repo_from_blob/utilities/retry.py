@@ -1,8 +1,15 @@
-from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
+from tenacity import retry, AsyncRetrying, stop_after_attempt, wait_exponential, retry_if_exception_type
 from azure.core.exceptions import AzureError
+import functools
 
-azure_retry = retry(
-    stop=stop_after_attempt(5),
-    wait=wait_exponential(multiplier=1, min=2, max=10),
-    retry=retry_if_exception_type(AzureError)
-)
+def azure_retry(function):
+    @functools.wraps(function)
+    async def wrapper(*args, **kwargs):
+        async for attempt in AsyncRetrying(
+            stop=stop_after_attempt(5),
+            wait=wait_exponential(multiplier=1, min=2, max=10),
+            retry=retry_if_exception_type(AzureError)
+        ):
+            with attempt:
+                return await function(*args, **kwargs)
+    return wrapper

@@ -48,12 +48,29 @@ async def get_blobs_by_type(request: FilesByTypeRequest):
 
 @router.post("/transform-to-parquet/")
 async def transform_blob_to_parquet(request: BlobToParquetRequest):
+    """
+    Converte un singolo blob in formato parquet e lo salva nella cartella outputs
+    Args:
+        request (BlobToParquetRequest): Richiesta contenente il nome del container e del blob.
+    Returns:
+        FileResponse: Risposta con il file Parquet convertito.
+    """
     result = await blob_to_parquet(request.container_name, request.blob_name)
     parquet_path = result.get("parquet_path")
     return FileResponse(parquet_path, media_type="application/octet-stream", filename=f"{request.blob_name}.parquet")
 
 @router.post("/transform-container-to-parquet/")
 async def transform_container_to_parquet(request: ContainerToParquetRequest):
+    """
+    Converte tutti i blob di un container in formato Parquet e li salva nella cartella outputs.
+    Nella richiesta e' possibile specificare la condizione single_parquet:
+    - se True, viene creato un UNICO file Parquet con tutti i blob del container
+    - se False, viene creato un file Parquet PER OGNI blob del container
+    Args:
+        request (ContainerToParquetRequest): Richiesta contenente il nome del container e il nome del file Parquet.
+    Returns:
+        JSONResponse: Risposta con lo stato della conversione e il percorso del file Parquet.
+    """
     result = await container_to_parquet(request.container_name, request.single_parquet)
     parquet_path = result.get("parquet_path")
     return {
