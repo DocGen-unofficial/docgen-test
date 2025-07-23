@@ -1,0 +1,10 @@
+azure-storage-blob
+azure-core
+fastapi
+uvicorn
+pandas
+aiohttp
+pyarrow
+fastparquet
+python-dotenv
+tenacity
