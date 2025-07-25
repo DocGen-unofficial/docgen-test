@@ -1,8 +1,6 @@
-version: '3.8'
-
 services:
   repo_downloader:
-    build: ./microservices/repo_downloader
+    build: ./microservices/input_integration_pipeline/source/repo_downloader
     ports:
       - "5001:8081"
     networks:
@@ -11,7 +9,7 @@ services:
       - microservices-data:/app/outputs
 
   upload_repo_on_blob:
-    build: ./microservices/upload_repo_on_blob
+    build: ./microservices/input_integration_pipeline/source/upload_repo_on_blob
     ports:
       - "5002:8082"
     depends_on:
@@ -20,11 +18,11 @@ services:
       - microservices-net
     volumes:
       - microservices-data:/app/outputs
-    environment:
-      - AZURE_STORAGE_CONNECTION_STRING=${AZURE_STORAGE_CONNECTION_STRING}
+    env_file:
+      - ./microservices/input_integration_pipeline/source/upload_repo_on_blob/.env
 
   fetch_repo_from_blob:
-    build: ./microservices/fetch_repo_from_blob
+    build: ./microservices/input_integration_pipeline/source/fetch_repo_from_blob
     ports:
       - "5003:8083"
     depends_on:
@@ -33,8 +31,8 @@ services:
       - microservices-net
     volumes:
       - microservices-data:/app/outputs
-    environment:
-    - AZURE_STORAGE_CONNECTION_STRING=${AZURE_STORAGE_CONNECTION_STRING}
+    env_file:
+      - ./microservices/input_integration_pipeline/source/fetch_repo_from_blob/.env
 
 networks:
   microservices-net:

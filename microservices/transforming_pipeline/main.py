@@ -12,3 +12,4 @@ def run_pipeline(data, selected_steps):
         if step in pipeline_steps:
             data = pipeline_steps[step](data)
     return data
+

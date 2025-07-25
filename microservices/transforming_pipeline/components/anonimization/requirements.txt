@@ -1,0 +1,12 @@
+pandas
+toml
+presidio-analyzer
+presidio-anonymizer
+spacy 
+requests
+
+pytorch
+accelerate
+
+openai
+pytest_asyncio

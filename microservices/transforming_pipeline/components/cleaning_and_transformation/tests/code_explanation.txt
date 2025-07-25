@@ -1,0 +1,46 @@
+<h1>ParquetTxtExtractor - Documentazione</h1>
+
+<h2>Panoramica</h2>
+<p>La classe ParquetTxtExtractor è progettata per elaborare file parquet contenenti documenti di testo. La sua funzione principale è identificare i file con estensione .txt, pulire il loro contenuto per prepararli alle fasi di chunking ed embedding, e salvare i risultati in un nuovo file parquet.</p>
+
+<h2>Architettura della Classe</h2>
+<p>La classe utilizza Pydantic per la validazione dei dati in input, garantendo che solo file con estensione .parquet possano essere processati. Questo approccio type-safe previene errori runtime dovuti a input non validi.</p>
+
+<h3>Inizializzazione</h3>
+<p>Durante l'inizializzazione, la classe carica automaticamente il file parquet in un DataFrame pandas. Se il caricamento fallisce, viene sollevata un'eccezione con un messaggio descrittivo dell'errore.</p>
+
+<h2>Pipeline di Pulizia del Testo</h2>
+<p>Il cuore della classe è il metodo clean_text(), che orchestra una serie di trasformazioni sul testo attraverso metodi privati (dunder methods). Ogni metodo si occupa di un aspetto specifico della pulizia:</p>
+
+<h3>1. Correzione Problemi di Encoding</h3>
+<p>Il metodo __fix_encoding_issues risolve problemi comuni di encoding UTF-8, sostituendo caratteri mal formati con le loro versioni corrette. Questo è particolarmente utile per testi importati da sistemi con encoding diversi.</p>
+
+<h3>2. Rimozione URLs ed Email</h3>
+<p>I metodi __remove_urls e __remove_emails utilizzano espressioni regolari per identificare e rimuovere indirizzi web e email dal testo. Questo è essenziale per proteggere informazioni sensibili e ridurre il rumore nei dati.</p>
+
+<h3>3. Gestione Caratteri Speciali</h3>
+<p>Il metodo __remove_special_characters mantiene solo i caratteri essenziali per il testo, inclusi i tag HTML (< e >). Questa scelta preserva la struttura semantica del documento originale.</p>
+
+<h3>4. Normalizzazione della Punteggiatura</h3>
+<p>La punteggiatura viene normalizzata per garantire spaziatura consistente. Spazi vengono aggiunti dopo i segni di punteggiatura quando mancanti e rimossi quando precedono la punteggiatura stessa.</p>
+
+<h3>5. Gestione degli Spazi Bianchi</h3>
+<p>Il metodo __remove_extra_whitespace elimina spazi, tabulazioni e newline ridondanti, mantenendo solo quelli necessari per la leggibilità del testo.</p>
+
+<h3>6. Conversione in Minuscolo</h3>
+<p>Tutto il testo viene convertito in minuscolo per uniformità, facilitando le successive operazioni di NLP.</p>
+
+<h3>7. Rimozione Righe Brevi</h3>
+<p>Le righe con meno di 3 caratteri vengono eliminate, rimuovendo elementi non informativi come righe vuote o contenenti solo punteggiatura.</p>
+
+<h2>Gestione Selettiva dei File</h2>
+<p>La classe processa solo file con estensione .txt, escludendo specificamente requirements.txt. Questa esclusione è importante perché i file requirements.txt hanno una struttura specifica che non dovrebbe essere alterata dalla pipeline di pulizia.</p>
+
+<h2>Output e Persistenza</h2>
+<p>Il metodo save_cleaned_parquet() crea una copia del DataFrame originale e sostituisce il contenuto nella seconda colonna con la versione pulita per i file .txt eligibili. Il DataFrame risultante mantiene la struttura originale a due colonne, garantendo compatibilità con sistemi downstream.</p>
+
+<h2>Considerazioni sulle Performance</h2>
+<p>L'elaborazione avviene row-by-row utilizzando iloc per accesso diretto agli indici. Mentre questo approccio può essere più lento per dataset molto grandi, garantisce precisione e controllo granulare sul processo di pulizia.</p>
+
+<h2>Best Practices per l'Utilizzo</h2>
+<p>Si consiglia di testare la pipeline su un campione rappresentativo dei dati prima di processare l'intero dataset. Inoltre, è importante verificare che i tag HTML preservati siano ben formati per evitare problemi nelle fasi successive di elaborazione.</p>

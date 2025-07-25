@@ -1,0 +1,6 @@
+docutils
+markdown
+pandas
+logging
+fastapi
+uvicorn

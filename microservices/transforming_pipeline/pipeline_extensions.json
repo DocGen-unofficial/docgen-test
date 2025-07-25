@@ -1,0 +1,5 @@
+{
+  "file_converter": [".md", ".rst"],
+  "python_to_text": [".py", ".ipynb"],
+  "text_cleaner": [".txt"]
+}
